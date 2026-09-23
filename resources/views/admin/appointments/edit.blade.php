@@ -82,7 +82,13 @@
 
                             <div class="col-12 mb-3">
                                 <label class="form-label font-bold">Ghi Chú Đặt Lịch</label>
-                                <textarea name="note" class="form-control" rows="3">{{ old('note', $appointment->note) }}</textarea>
+                                <textarea name="note" class="form-control" rows="2">{{ old('note', $appointment->note) }}</textarea>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label class="form-label font-bold text-primary"><i class="bi bi-journal-text me-1"></i> Ghi Chú Kỹ Thuật Tóc (Hair Notes)</label>
+                                <textarea name="hair_notes" class="form-control" rows="2" placeholder="Ví dụ: Tóc tơ mỏng, trán chữ M, dùng pomade gốc nước, uốn size trục 16...">{{ old('hair_notes', $appointment->hair_notes) }}</textarea>
+                                <small class="text-muted">Ghi chú lưu vào hồ sơ kỹ thuật để phục vụ tốt hơn cho các lần cắt sau của khách hàng.</small>
                             </div>
                         </div>
 

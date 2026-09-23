@@ -53,12 +53,27 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Giá Niêm Yết (VNĐ) <span class="text-danger">*</span></label>
-                            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', (int)$service->price) }}" min="0" step="5000" required>
-                            @error('price')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-bold">Giá Bán / Khuyến Mãi (VNĐ) <span class="text-danger">*</span></label>
+                                <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', (int)$service->price) }}" min="0" step="5000" required>
+                                @error('price')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-bold">Giá Gốc Trước Giảm (VNĐ)</label>
+                                <input type="number" name="original_price" class="form-control @error('original_price') is-invalid @enderror" value="{{ old('original_price', (int)$service->original_price) }}" min="0" step="5000">
+                                <small class="text-muted">Dùng để hiển thị giảm giá cho gói Combo</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check form-switch ps-5">
+                            <input class="form-check-input" type="checkbox" name="is_combo" id="isComboSwitch" value="1" {{ old('is_combo', $service->is_combo) ? 'checked' : '' }}>
+                            <label class="form-check-label font-bold text-warning" for="isComboSwitch">
+                                <i class="bi bi-stars"></i> Đóng gói thành gói Combo Dịch Vụ (Cắt + Uốn + Gội...)
+                            </label>
                         </div>
 
                         <div class="mb-3">

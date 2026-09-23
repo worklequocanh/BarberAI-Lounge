@@ -41,12 +41,15 @@ class ServiceController extends Controller
             'name' => 'required|string|max:150',
             'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric|min:0',
+            'original_price' => 'nullable|numeric|min:0',
             'duration_min' => 'required|integer|min:5|max:300',
             'description' => 'nullable|string',
+            'is_combo' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']).'-'.rand(100, 999);
+        $validated['is_combo'] = $request->has('is_combo');
         $validated['is_active'] = $request->has('is_active');
 
         Service::create($validated);
@@ -73,11 +76,14 @@ class ServiceController extends Controller
             'name' => 'required|string|max:150',
             'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric|min:0',
+            'original_price' => 'nullable|numeric|min:0',
             'duration_min' => 'required|integer|min:5|max:300',
             'description' => 'nullable|string',
+            'is_combo' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
         ]);
 
+        $validated['is_combo'] = $request->has('is_combo');
         $validated['is_active'] = $request->has('is_active');
 
         $service->update($validated);

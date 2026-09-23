@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barber;
+use App\Models\BarberLeave;
 use App\Models\BarberSchedule;
 use App\Models\Role;
 use App\Models\User;
@@ -83,7 +84,9 @@ class BarberController extends Controller
      */
     public function edit(Barber $barber): View
     {
-        $barber->load('user');
+        $barber->load(['user', 'leaves' => function ($q) {
+            $q->orderBy('leave_date', 'desc');
+        }]);
 
         return view('admin.barbers.edit', compact('barber'));
     }
@@ -113,6 +116,40 @@ class BarberController extends Controller
         ]);
 
         return redirect()->route('admin.barbers.index')->with('success', 'Cập nhật hồ sơ Stylist thành công!');
+    }
+
+    /**
+     * Store leave/day-off request for barber.
+     */
+    public function storeLeave(Request $request, Barber $barber): RedirectResponse
+    {
+        $validated = $request->validate([
+            'leave_date' => 'required|date',
+            'reason' => 'nullable|string|max:255',
+        ]);
+
+        BarberLeave::updateOrCreate(
+            [
+                'barber_id' => $barber->id,
+                'leave_date' => $validated['leave_date'],
+            ],
+            [
+                'reason' => $validated['reason'] ?? 'Nghỉ phép',
+                'status' => 'approved',
+            ]
+        );
+
+        return redirect()->route('admin.barbers.edit', $barber->id)->with('success', 'Đã ghi nhận ngày nghỉ phép cho thợ!');
+    }
+
+    /**
+     * Delete/cancel leave request.
+     */
+    public function destroyLeave(Barber $barber, BarberLeave $leave): RedirectResponse
+    {
+        $leave->delete();
+
+        return redirect()->route('admin.barbers.edit', $barber->id)->with('success', 'Đã huỷ ngày nghỉ phép!');
     }
 
     /**

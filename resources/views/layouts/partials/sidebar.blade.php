@@ -35,6 +35,9 @@
                         <li class="submenu-item {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}">
                             <a href="{{ route('admin.appointments.index') }}">Tất cả lịch hẹn</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('admin.appointments.timeline') ? 'active' : '' }}">
+                            <a href="{{ route('admin.appointments.timeline') }}">Matrix Timeline (Bản đồ giờ)</a>
+                        </li>
                         <li class="submenu-item {{ request()->routeIs('admin.appointments.create') ? 'active' : '' }}">
                             <a href="{{ route('admin.appointments.create') }}">Tạo lịch hẹn mới</a>
                         </li>
@@ -58,11 +61,11 @@
                 <li class="sidebar-item has-sub {{ request()->is('admin/services*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-scissors"></i>
-                        <span>Dịch Vụ Salon</span>
+                        <span>Dịch Vụ & Combo</span>
                     </a>
                     <ul class="submenu {{ request()->is('admin/services*') ? 'active' : '' }}">
                         <li class="submenu-item {{ request()->routeIs('admin.services.index') ? 'active' : '' }}">
-                            <a href="{{ route('admin.services.index') }}">Bảng giá dịch vụ</a>
+                            <a href="{{ route('admin.services.index') }}">Bảng giá dịch vụ & Combo</a>
                         </li>
                     </ul>
                 </li>
@@ -89,6 +92,13 @@
                 </li>
 
                 <li class="sidebar-title">Marketing & Khách Hàng</li>
+
+                <li class="sidebar-item {{ request()->is('admin/campaigns*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.campaigns.index') }}" class='sidebar-link'>
+                        <i class="bi bi-envelope-paper-heart-fill"></i>
+                        <span>Email Marketing</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item {{ request()->is('admin/coupons*') ? 'active' : '' }}">
                     <a href="{{ route('admin.coupons.index') }}" class='sidebar-link'>

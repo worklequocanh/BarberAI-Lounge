@@ -78,6 +78,65 @@
                 </div>
             </div>
         </div>
+
+        <!-- Cột Phải: Đăng Ký Nghỉ Phép & Lịch Trực -->
+        <div class="col-12 col-lg-4">
+            <!-- Form Đăng Ký Nghỉ Phép -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-transparent">
+                    <h6 class="font-bold mb-0 text-danger"><i class="bi bi-calendar-x me-2"></i>Đăng Ký Nghỉ Phép (Day Off)</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('admin.barbers.leaves.store', $barber->id) }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label font-bold">Ngày Nghỉ <span class="text-danger">*</span></label>
+                            <input type="date" name="leave_date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-bold">Lý Do Nghỉ</label>
+                            <input type="text" name="reason" class="form-control" placeholder="Việc gia đình, nghỉ ốm, đào tạo...">
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 font-bold">
+                            <i class="bi bi-plus-circle me-1"></i> Lưu Ngày Nghỉ
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Danh Sách Ngày Nghỉ -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h6 class="font-bold mb-0">Các Ngày Đã Đăng Ký Nghỉ</h6>
+                    <span class="badge bg-secondary">{{ $barber->leaves->count() }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        @forelse($barber->leaves as $leave)
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-3 py-2">
+                            <div>
+                                <span class="font-bold text-dark d-block">
+                                    <i class="bi bi-calendar-event me-1"></i> {{ \Carbon\Carbon::parse($leave->leave_date)->format('d/m/Y') }}
+                                </span>
+                                <small class="text-muted">{{ $leave->reason ?? 'Nghỉ phép' }}</small>
+                            </div>
+                            <form action="{{ route('admin.barbers.leaves.destroy', [$barber->id, $leave->id]) }}" method="POST" data-confirm="Huỷ ngày nghỉ phép {{ \Carbon\Carbon::parse($leave->leave_date)->format('d/m/Y') }}?" class="form-delete">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger p-1" title="Xoá">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                        @empty
+                        <div class="p-3 text-center text-muted small">
+                            Chưa có ngày nghỉ nào được đăng ký
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 @endsection

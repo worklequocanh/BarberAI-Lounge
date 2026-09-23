@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barber;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -53,6 +54,34 @@ class UserController extends Controller
         User::create($validated);
 
         return redirect()->route('admin.users.index')->with('success', 'Đã tạo tài khoản thành công!');
+    }
+
+    /**
+     * Show detailed Customer 360 profile with appointment history and hair notes.
+     */
+    public function show(User $user): View
+    {
+        $user->load(['role', 'appointments' => function ($q) {
+            $q->with(['barber.user', 'services'])->latest();
+        }]);
+
+        $appointments = $user->appointments;
+        $totalSpent = $appointments->where('status', 'completed')->sum('total_price');
+        $completedCount = $appointments->where('status', 'completed')->count();
+
+        // Find favorite barber
+        $barberStats = $appointments->whereNotNull('barber_id')
+            ->groupBy('barber_id')
+            ->map->count()
+            ->sortDesc();
+
+        $favoriteBarberId = $barberStats->keys()->first();
+        $favoriteBarber = $favoriteBarberId ? Barber::with('user')->find($favoriteBarberId) : null;
+
+        // Collect all hair notes
+        $hairNotes = $appointments->whereNotNull('hair_notes')->filter(fn ($a) => ! empty(trim($a->hair_notes)));
+
+        return view('admin.users.show', compact('user', 'appointments', 'totalSpent', 'completedCount', 'favoriteBarber', 'hairNotes'));
     }
 
     /**

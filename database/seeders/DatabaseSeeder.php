@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             HairstyleSeeder::class,
             CouponSeeder::class,
             AppointmentSeeder::class,
+            EnhancementDataSeeder::class,
         ]);
     }
 }

@@ -34,7 +34,12 @@
                         @forelse($services as $service)
                         <tr>
                             <td>
-                                <div class="font-bold fs-6">{{ $service->name }}</div>
+                                <div class="font-bold fs-6">
+                                    {{ $service->name }}
+                                    @if($service->is_combo)
+                                        <span class="badge bg-warning text-dark ms-1"><i class="bi bi-stars"></i> COMBO TIẾT KIỆM</span>
+                                    @endif
+                                </div>
                                 <small class="text-muted">{{ Str::limit($service->description, 60) }}</small>
                             </td>
                             <td>
@@ -45,8 +50,18 @@
                             <td>
                                 <i class="bi bi-stopwatch text-muted me-1"></i> {{ $service->duration_min ?? 30 }} phút
                             </td>
-                            <td class="font-extrabold text-primary">
-                                {{ number_format($service->price, 0, ',', '.') }} đ
+                            <td>
+                                <div class="font-extrabold text-primary fs-6">
+                                    {{ number_format($service->price, 0, ',', '.') }} đ
+                                </div>
+                                @if($service->original_price && $service->original_price > $service->price)
+                                    <small class="text-muted text-decoration-line-through">
+                                        {{ number_format($service->original_price, 0, ',', '.') }} đ
+                                    </small>
+                                    <span class="badge bg-light-danger text-danger small">
+                                        -{{ round((($service->original_price - $service->price) / $service->original_price) * 100) }}%
+                                    </span>
+                                @endif
                             </td>
                             <td>
                                 @if($service->is_active ?? true)

@@ -58,6 +58,9 @@
                             <td>{{ $user->created_at ? $user->created_at->format('d/m/Y') : '---' }}</td>
                             <td>
                                 <div class="btn-group">
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-sm btn-outline-info" title="Hồ sơ 360°">
+                                        <i class="bi bi-eye"></i> Hồ sơ
+                                    </a>
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary" title="Sửa">
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>

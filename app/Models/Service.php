@@ -24,6 +24,9 @@ class Service extends Model
         'slug',
         'description',
         'price',
+        'is_combo',
+        'original_price',
+        'combo_items',
         'duration_min',
         'image',
         'is_active',
@@ -36,6 +39,9 @@ class Service extends Model
     {
         return [
             'price' => 'decimal:0',
+            'original_price' => 'decimal:0',
+            'is_combo' => 'boolean',
+            'combo_items' => 'array',
             'duration_min' => 'integer',
             'is_active' => 'boolean',
             'created_at' => 'datetime',

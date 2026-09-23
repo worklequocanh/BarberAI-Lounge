@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Models\Barber;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -40,6 +41,31 @@ class AppointmentController extends Controller
     }
 
     /**
+     * Show timeline / matrix schedule view for appointments.
+     */
+    public function timeline(Request $request): View
+    {
+        $date = $request->query('date', Carbon::today()->format('Y-m-d'));
+        $barbers = Barber::with(['user', 'leaves' => function ($q) use ($date) {
+            $q->where('leave_date', $date)->where('status', 'approved');
+        }])->where('is_available', true)->get();
+
+        $appointments = Appointment::with(['customer', 'services'])
+            ->whereDate('appointment_date', $date)
+            ->where('status', '!=', 'cancelled')
+            ->get();
+
+        $timeSlots = [
+            '08:30', '09:00', '09:30', '10:00', '10:30', '11:00',
+            '11:30', '13:30', '14:00', '14:30', '15:00', '15:30',
+            '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
+            '19:00', '19:30', '20:00', '20:30',
+        ];
+
+        return view('admin.appointments.timeline', compact('date', 'barbers', 'appointments', 'timeSlots'));
+    }
+
+    /**
      * Show form to create appointment.
      */
     public function create(): View
@@ -64,6 +90,7 @@ class AppointmentController extends Controller
             'service_ids' => 'required|array',
             'service_ids.*' => 'exists:services,id',
             'note' => 'nullable|string',
+            'hair_notes' => 'nullable|string',
         ]);
 
         // Find or create customer user
@@ -89,7 +116,8 @@ class AppointmentController extends Controller
             'status' => 'confirmed',
             'payment_status' => 'unpaid',
             'payment_method' => 'cash',
-            'note' => $validated['note'],
+            'note' => $validated['note'] ?? null,
+            'hair_notes' => $validated['hair_notes'] ?? null,
         ]);
 
         $syncData = [];
@@ -126,6 +154,7 @@ class AppointmentController extends Controller
             'service_ids' => 'required|array',
             'service_ids.*' => 'exists:services,id',
             'note' => 'nullable|string',
+            'hair_notes' => 'nullable|string',
         ]);
 
         $selectedServices = Service::whereIn('id', $validated['service_ids'])->get();
@@ -137,7 +166,8 @@ class AppointmentController extends Controller
             'start_time' => $validated['start_time'],
             'status' => $validated['status'],
             'total_price' => $totalPrice,
-            'note' => $validated['note'],
+            'note' => $validated['note'] ?? null,
+            'hair_notes' => $validated['hair_notes'] ?? null,
         ]);
 
         $syncData = [];

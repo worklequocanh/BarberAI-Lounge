@@ -40,7 +40,7 @@
                                 <select name="barber_id" class="form-select">
                                     <option value="">-- Bất kỳ thợ nào còn trống --</option>
                                     @foreach($barbers as $barber)
-                                        <option value="{{ $barber->id }}" {{ old('barber_id') == $barber->id ? 'selected' : '' }}>
+                                        <option value="{{ $barber->id }}" {{ (old('barber_id', request('barber_id')) == $barber->id) ? 'selected' : '' }}>
                                             {{ $barber->user->name ?? 'Stylist' }} ({{ $barber->experience_years ?? 0 }} năm KN)
                                         </option>
                                     @endforeach
@@ -48,19 +48,14 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label font-bold">Ngày Hẹn <span class="text-danger">*</span></label>
-                                <input type="date" name="appointment_date" class="form-control" value="{{ old('appointment_date', date('Y-m-d')) }}" required>
+                                <input type="date" name="appointment_date" class="form-control" value="{{ old('appointment_date', request('date', date('Y-m-d'))) }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label font-bold">Khung Giờ <span class="text-danger">*</span></label>
                                 <select name="start_time" class="form-select" required>
-                                    <option value="09:00">09:00 - 09:45</option>
-                                    <option value="10:00">10:00 - 10:45</option>
-                                    <option value="11:00">11:00 - 11:45</option>
-                                    <option value="14:00" selected>14:00 - 14:45</option>
-                                    <option value="15:00">15:00 - 15:45</option>
-                                    <option value="16:00">16:00 - 16:45</option>
-                                    <option value="17:00">17:00 - 17:45</option>
-                                    <option value="19:00">19:00 - 19:45</option>
+                                    @foreach(['08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30'] as $time)
+                                        <option value="{{ $time }}" {{ old('start_time', request('start_time', '14:00')) == $time ? 'selected' : '' }}>{{ $time }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 

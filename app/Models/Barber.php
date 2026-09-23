@@ -59,6 +59,14 @@ class Barber extends Model
     }
 
     /**
+     * Leave / day-offs of this barber.
+     */
+    public function leaves(): HasMany
+    {
+        return $this->hasMany(BarberLeave::class);
+    }
+
+    /**
      * Appointments assigned to this barber.
      */
     public function appointments(): HasMany

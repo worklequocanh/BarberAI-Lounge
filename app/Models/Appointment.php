@@ -28,6 +28,8 @@ class Appointment extends Model
         'payment_method',
         'payment_status',
         'note',
+        'hair_notes',
+        'result_photos',
         'cancel_reason',
         'ai_recommendation_id',
         'coupon_id',
@@ -42,6 +44,7 @@ class Appointment extends Model
         return [
             'appointment_date' => 'date',
             'total_price' => 'decimal:0',
+            'result_photos' => 'array',
         ];
     }
 

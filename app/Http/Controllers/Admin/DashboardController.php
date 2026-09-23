@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AiConversation;
 use App\Models\Appointment;
 use App\Models\Barber;
+use App\Models\BarberLeave;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
@@ -42,19 +43,25 @@ class DashboardController extends Controller
         // 5. Thống kê khách hàng
         $totalCustomers = User::count();
 
-        // 6. Danh sách 6 lịch hẹn mới nhất
+        // 6. Số lượng Combo dịch vụ & Ưu đãi
+        $combosCount = Service::where('is_combo', true)->where('is_active', true)->count();
+
+        // 7. Thợ nghỉ phép hôm nay
+        $barbersOnLeaveToday = BarberLeave::where('leave_date', $today)->where('status', 'approved')->count();
+
+        // 8. Danh sách 6 lịch hẹn mới nhất
         $recentAppointments = Appointment::with(['customer', 'barber.user', 'services'])
             ->latest()
             ->take(6)
             ->get();
 
-        // 7. Top Thợ cắt tóc
+        // 9. Top Thợ cắt tóc
         $topBarbers = Barber::with('user')
             ->orderByDesc('rating_avg')
             ->take(4)
             ->get();
 
-        // 8. Dịch vụ phổ biến
+        // 10. Dịch vụ & Combo phổ biến
         $popularServices = Service::with('category')
             ->where('is_active', true)
             ->take(4)
@@ -69,6 +76,8 @@ class DashboardController extends Controller
             'totalBarbersCount',
             'aiConversationsCount',
             'totalCustomers',
+            'combosCount',
+            'barbersOnLeaveToday',
             'recentAppointments',
             'topBarbers',
             'popularServices'

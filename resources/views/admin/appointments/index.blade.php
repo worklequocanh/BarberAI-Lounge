@@ -83,6 +83,9 @@
                 @endif
             </h5>
             <div class="d-flex gap-2">
+                <a href="{{ route('admin.appointments.timeline') }}" class="btn btn-outline-primary d-flex align-items-center gap-2">
+                    <i class="bi bi-grid-3x3-gap-fill"></i> Matrix Timeline (Bản Đồ Giờ)
+                </a>
                 <a href="{{ route('admin.appointments.create') }}" class="btn btn-primary d-flex align-items-center gap-2">
                     <i class="bi bi-plus-circle"></i> Tạo Lịch Hẹn Mới
                 </a>

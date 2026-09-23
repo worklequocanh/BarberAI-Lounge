@@ -61,7 +61,11 @@
                     <div class="col-md-8">
                         <h6 class="text-muted font-semibold mb-1">Thợ Hoạt Động</h6>
                         <h4 class="font-extrabold mb-0 text-purple">{{ $activeBarbersCount }} / {{ $totalBarbersCount }} Thợ</h4>
-                        <span class="text-xs text-success font-bold">Đang sẵn sàng đón khách</span>
+                        @if($barbersOnLeaveToday > 0)
+                            <span class="text-xs text-danger font-bold"><i class="bi bi-person-x"></i> {{ $barbersOnLeaveToday }} thợ nghỉ phép hôm nay</span>
+                        @else
+                            <span class="text-xs text-success font-bold">100% đội ngũ sẵn sàng</span>
+                        @endif
                     </div>
                 </div>
             </div>
