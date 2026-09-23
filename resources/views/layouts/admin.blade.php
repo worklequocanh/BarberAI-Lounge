@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full bg-slate-950 text-slate-100 antialiased dark">
+<html lang="vi" class="h-full bg-[#0B1120] text-[#F8FAFC] antialiased dark">
 
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,7 @@
     @stack('styles')
 </head>
 
-<body class="h-full bg-slate-950 text-slate-200 font-sans selection:bg-amber-500 selection:text-slate-950 overflow-x-hidden">
+<body class="h-full bg-[#0B1120] text-[#CBD5E1] font-sans selection:bg-[#6366F1] selection:text-white overflow-x-hidden">
     <!-- App Container -->
     <div class="min-h-full flex flex-col">
         <!-- Sidebar Navigation -->
@@ -40,9 +40,9 @@
                     </div>
 
                     <!-- Breadcrumbs -->
-                    <nav class="flex items-center text-xs font-medium text-slate-400 space-x-2 shrink-0">
-                        <a href="{{ route('admin.dashboard') }}" class="hover:text-amber-400 transition-colors">Admin</a>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+                    <nav class="flex items-center text-xs font-medium text-[#94A3B8] space-x-2 shrink-0">
+                        <a href="{{ route('admin.dashboard') }}" class="hover:text-[#22D3EE] transition-colors">Admin</a>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-[#334155]"></i>
                         @yield('breadcrumb')
                     </nav>
                 </div>

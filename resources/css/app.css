@@ -5,16 +5,46 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+:root {
+    --bg-main: #0B1120;
+    --bg-sidebar: #111827;
+    --bg-card: #1E293B;
+    --bg-card-hover: #273449;
+
+    --border: #334155;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+
+    --primary: #6366F1;
+    --primary-hover: #818CF8;
+    --accent: #22D3EE;
+
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #F43F5E;
+    --info: #38BDF8;
+}
+
 @theme {
     --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
-    --color-brand-50: #fbf8f3;
-    --color-brand-100: #f5eedf;
-    --color-brand-500: #d97706;
-    --color-brand-600: #b45309;
-    --color-brand-700: #92400e;
-    --color-dark-800: #18191c;
-    --color-dark-900: #0f1013;
-    --color-dark-950: #08090a;
+    
+    --color-main: #0B1120;
+    --color-sidebar: #111827;
+    --color-card: #1E293B;
+    --color-card-hover: #273449;
+    --color-border: #334155;
+
+    --color-brand-primary: #6366F1;
+    --color-brand-hover: #818CF8;
+    --color-accent: #22D3EE;
+
+    --color-brand-50: #eef2ff;
+    --color-brand-100: #e0e7ff;
+    --color-brand-500: #6366F1;
+    --color-brand-600: #4f46e5;
+    --color-brand-700: #4338ca;
 }
 
 /* Custom scrollbar */
