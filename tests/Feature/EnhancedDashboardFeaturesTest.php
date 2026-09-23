@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Barber;
 use App\Models\EmailCampaign;
-use App\Models\Service;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;

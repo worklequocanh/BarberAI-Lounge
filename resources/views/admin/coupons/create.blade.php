@@ -5,80 +5,82 @@
 @section('page-description', 'Phát hành mã ưu đãi giảm giá theo phần trăm hoặc số tiền cố định cho khách hàng.')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.coupons.index') }}">Khuyến Mãi</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Tạo Mới</li>
+    <a href="{{ route('admin.coupons.index') }}" class="hover:text-amber-400">Khuyến Mãi</a>
+    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600 mx-2"></i>
+    <span class="text-amber-400 font-semibold">Tạo Mới</span>
 @endsection
 
 @section('content')
-<section class="section">
-    <div class="row">
-        <div class="col-12 col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Thông Tin Mã Ưu Đãi</h5>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8">
+        <form action="{{ route('admin.coupons.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Mã Voucher (Code) <span class="text-rose-400">*</span></label>
+                <input type="text" name="code" value="{{ old('code') }}" placeholder="VD: BARBERAI20, HELLO2026..." required
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-mono font-bold text-sm tracking-wider uppercase focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Hình Thức Giảm <span class="text-rose-400">*</span></label>
+                    <select name="discount_type" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <option value="percent">Giảm theo phần trăm (%)</option>
+                        <option value="fixed">Giảm số tiền cố định (VNĐ)</option>
+                    </select>
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.coupons.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Mã Voucher (Code) <span class="text-danger">*</span></label>
-                            <input type="text" name="code" class="form-control text-uppercase font-bold @error('code') is-invalid @enderror" value="{{ old('code') }}" placeholder="VD: BARBERAI20, HELLO2026..." required>
-                            @error('code')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Hình Thức Giảm <span class="text-danger">*</span></label>
-                                <select name="discount_type" class="form-select font-bold">
-                                    <option value="percent" {{ old('discount_type') == 'percent' ? 'selected' : '' }}>Giảm theo phần trăm (%)</option>
-                                    <option value="fixed" {{ old('discount_type') == 'fixed' ? 'selected' : '' }}>Giảm số tiền cố định (VNĐ)</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Mức Giảm Giá <span class="text-danger">*</span></label>
-                                <input type="number" name="discount_value" class="form-control @error('discount_value') is-invalid @enderror" value="{{ old('discount_value', 20) }}" min="1" required>
-                                @error('discount_value')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Đơn Tối Thiểu (VNĐ)</label>
-                                <input type="number" name="min_order_amount" class="form-control" value="{{ old('min_order_amount', 100000) }}" min="0">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Giới Hạn Lượt Dùng</label>
-                                <input type="number" name="usage_limit" class="form-control" value="{{ old('usage_limit', 100) }}" min="1">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Ngày Bắt Đầu</label>
-                                <input type="date" name="starts_at" class="form-control" value="{{ date('Y-m-d') }}">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Ngày Hết Hạn</label>
-                                <input type="date" name="expires_at" class="form-control" value="{{ date('Y-m-d', strtotime('+30 days')) }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-4 form-check form-switch ps-5">
-                            <input class="form-check-input" type="checkbox" name="is_active" id="isActiveSwitch" value="1" checked>
-                            <label class="form-check-label font-bold" for="isActiveSwitch">Kích hoạt mã này ngay sau khi tạo</label>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.coupons.index') }}" class="btn btn-light-secondary">Huỷ Bỏ</a>
-                            <button type="submit" class="btn btn-primary px-4">Tạo Mã Giảm Giá</button>
-                        </div>
-                    </form>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Mức Giảm Giá <span class="text-rose-400">*</span></label>
+                    <input type="number" name="discount_value" value="{{ old('discount_value', 20) }}" min="1" required
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
             </div>
-        </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Đơn Hàng Tối Thiểu (VNĐ)</label>
+                    <input type="number" name="min_order_amount" value="{{ old('min_order_amount', 100000) }}" min="0"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Giới Hạn Lượt Dùng</label>
+                    <input type="number" name="usage_limit" value="{{ old('usage_limit', 100) }}" min="1"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Ngày Bắt Đầu</label>
+                    <input type="date" name="starts_at" value="{{ date('Y-m-d') }}"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Ngày Hết Hạn</label>
+                    <input type="date" name="expires_at"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <input type="checkbox" name="is_active" id="isActive" value="1" checked
+                    class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 bg-slate-900 border-slate-700">
+                <label for="isActive" class="text-xs font-semibold text-slate-300 cursor-pointer">Kích hoạt mã sử dụng ngay</label>
+            </div>
+
+            <div class="pt-6 border-t border-slate-800 flex justify-end gap-3">
+                <a href="{{ route('admin.coupons.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold transition-colors">
+                    Huỷ Bỏ
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/20 transition-all">
+                    Lưu Voucher
+                </button>
+            </div>
+        </form>
     </div>
-</section>
+</div>
 @endsection

@@ -1,70 +1,92 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="h-full bg-slate-950 text-slate-100 antialiased dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard') - Barber AI Lounge</title>
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/sweetalert2/sweetalert2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app-DVaPmGc1.css') }}" onerror="this.onerror=null;">
+    <!-- Vite Assets: Tailwind v4 + FontAwesome 6 + SweetAlert2 -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
 
-<body>
-    <div id="app">
+<body class="h-full bg-slate-950 text-slate-200 font-sans selection:bg-amber-500 selection:text-slate-950 overflow-x-hidden">
+    <!-- App Container -->
+    <div class="min-h-full flex flex-col">
+        <!-- Sidebar Navigation -->
         @include('layouts.partials.sidebar')
 
-        <div id="main" class="layout-navbar">
+        <!-- Main Workspace (Offset for desktop sidebar w-64) -->
+        <div class="lg:pl-64 flex flex-col flex-1 min-h-screen">
+            <!-- Header Topbar -->
             @include('layouts.partials.navbar')
 
-            <div id="main-content">
-                <div class="page-heading">
-                    <div class="page-title mb-4">
-                        <div class="row">
-                            <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>@yield('page-title', 'Dashboard')</h3>
-                                <p class="text-subtitle text-muted">@yield('page-description', 'Hệ thống quản trị tiệm tóc nam & AI tư vấn kiểu tóc.')</p>
-                            </div>
-                            <div class="col-12 col-md-6 order-md-2 order-first">
-                                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Admin</a></li>
-                                        @yield('breadcrumb')
-                                    </ol>
-                                </nav>
-                            </div>
-                        </div>
+            <!-- Main Content Area -->
+            <main class="flex-1 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl w-full mx-auto">
+                <!-- Page Title & Breadcrumbs -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                            @yield('page-title', 'Dashboard')
+                        </h1>
+                        <p class="text-sm text-slate-400 mt-1">@yield('page-description', 'Hệ thống quản trị tiệm tóc nam & AI tư vấn kiểu tóc.')</p>
                     </div>
 
-                    @include('layouts.partials.alerts')
-
-                    <div class="page-content">
-                        @yield('content')
-                    </div>
+                    <!-- Breadcrumbs -->
+                    <nav class="flex items-center text-xs font-medium text-slate-400 space-x-2 shrink-0">
+                        <a href="{{ route('admin.dashboard') }}" class="hover:text-amber-400 transition-colors">Admin</a>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+                        @yield('breadcrumb')
+                    </nav>
                 </div>
 
-                @include('layouts.partials.footer')
-            </div>
+                <!-- Alert Messages -->
+                @include('layouts.partials.alerts')
+
+                <!-- Primary Content Slot -->
+                @yield('content')
+            </main>
+
+            <!-- Footer -->
+            @include('layouts.partials.footer')
         </div>
     </div>
 
-    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    <!-- SweetAlert2 Trigger Listener -->
     @include('layouts.partials.sweetalert')
+
+    <!-- Interactive Mobile Drawer Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const openBtn = document.getElementById('sidebar-open-btn');
+            const closeBtn = document.getElementById('sidebar-close-btn');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            if (openBtn) openBtn.addEventListener('click', openSidebar);
+            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if (backdrop) backdrop.addEventListener('click', closeSidebar);
+        });
+    </script>
 
     @stack('scripts')
 </body>

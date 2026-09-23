@@ -1,101 +1,87 @@
 @extends('layouts.admin')
 
-@section('title', 'AI Tư Vấn Kiểu Tóc')
+@section('title', 'AI Styling Assistant')
 @section('page-title', 'AI Styling Assistant')
-@section('page-description', 'Theo dõi lịch sử tư vấn, phân tích hình thái khuôn mặt và thống kê token AI.')
+@section('page-description', 'Theo dõi lịch sử tư vấn, phân tích hình thái khuôn mặt và thống kê hiệu suất AI.')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">Trợ Lý AI</li>
+    <span class="text-amber-400 font-semibold">Trợ Lý AI</span>
 @endsection
 
 @section('content')
-<section class="section">
-    <div class="row">
-        <div class="col-12 col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4 text-center">
-                    <div class="avatar avatar-xl bg-light-primary text-primary mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-cpu fs-1"></i>
-                    </div>
-                    <h5 class="font-bold">Mô Hình AI Đang Chạy</h5>
-                    <p class="text-muted small">Gemini 1.5 Pro / Vision Face Detection</p>
-                    <span class="badge bg-success px-3 py-2 rounded-pill">Hoạt động ổn định</span>
-                </div>
-            </div>
+<!-- Row 1: AI Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+    <div class="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center text-2xl shrink-0">
+            <i class="fa-solid fa-microchip"></i>
         </div>
-
-        <div class="col-12 col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4 text-center">
-                    <div class="avatar avatar-xl bg-light-warning text-warning mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-chat-heart fs-1"></i>
-                    </div>
-                    <h5 class="font-bold">Lượt Tư Vấn Tháng Này</h5>
-                    <h3 class="font-extrabold text-primary mb-0">1,482</h3>
-                    <p class="text-muted small mt-1">+18.5% so với tháng trước</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4 text-center">
-                    <div class="avatar avatar-xl bg-light-info text-info mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-shield-check fs-1"></i>
-                    </div>
-                    <h5 class="font-bold">Độ Hài Lòng Của Khách</h5>
-                    <h3 class="font-extrabold text-success mb-0">96.8%</h3>
-                    <p class="text-muted small mt-1">Dựa trên 850 lượt feedback</p>
-                </div>
-            </div>
+        <div>
+            <div class="text-[11px] font-bold uppercase text-slate-400">Mô Hình AI</div>
+            <div class="text-lg font-black text-white">Gemini 1.5 Vision</div>
+            <span class="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-semibold mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Hoạt động ổn định
+            </span>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-header">
-            <h5 class="card-title mb-0">Nhật Ký Phiên Tư Vấn Gần Nhất</h5>
+    <div class="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-2xl shrink-0">
+            <i class="fa-solid fa-comments"></i>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>PHIÊN TƯ VẤN</th>
-                            <th>NGƯỜI DÙNG</th>
-                            <th>DÁNG MẶT NHẬN DIỆN</th>
-                            <th>MẪU TÓC GỢI Ý</th>
-                            <th>THỜI GIAN</th>
-                            <th>HÀNH ĐỘNG</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($conversations as $conv)
-                        <tr>
-                            <td class="font-bold">#{{ $conv->id }}</td>
-                            <td>{{ $conv->user->name ?? 'Khách truy cập' }}</td>
-                            <td>
-                                <span class="badge bg-light-primary text-primary">Khuôn mặt tròn</span>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary me-1">Side Part 7/3</span>
-                                <span class="badge bg-secondary">Pompadour</span>
-                            </td>
-                            <td>{{ $conv->created_at->diffForHumans() }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> Xem kết quả</button>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                Chưa có phiên tư vấn nào gần đây
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+        <div>
+            <div class="text-[11px] font-bold uppercase text-slate-400">Lượt Tư Vấn Tháng Này</div>
+            <div class="text-2xl font-black text-amber-400">1,482 <span class="text-sm font-medium text-slate-400">lượt</span></div>
+            <span class="text-[11px] text-emerald-400 font-medium">+18.5% so với tháng trước</span>
         </div>
     </div>
-</section>
+
+    <div class="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-2xl shrink-0">
+            <i class="fa-solid fa-heart-circle-check"></i>
+        </div>
+        <div>
+            <div class="text-[11px] font-bold uppercase text-slate-400">Độ Hài Lòng Kiểu Tóc</div>
+            <div class="text-2xl font-black text-emerald-400">96.8%</div>
+            <span class="text-[11px] text-slate-400 font-medium">Từ 850 lượt đánh giá khách</span>
+        </div>
+    </div>
+</div>
+
+<!-- AI Matching Overview -->
+<div class="rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+        <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> AI Matching Engine Status
+            </h3>
+            <p class="text-xs text-slate-400">Hệ thống phân tích hình thái xương quai hàm, vầng trán và chất tóc</p>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <i class="fa-solid fa-circle-check text-[10px] mr-1"></i> Sẵn Sàng 100%
+        </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center">
+            <div class="text-xs font-bold text-slate-400 mb-1">MẶT TRÒN (ROUND)</div>
+            <div class="text-sm font-black text-amber-400">Side Part 7/3, Pompadour</div>
+            <span class="text-[10px] text-slate-500">Tạo cảm giác mặt dài hơn</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center">
+            <div class="text-xs font-bold text-slate-400 mb-1">MẶT VUÔNG (SQUARE)</div>
+            <div class="text-sm font-black text-sky-400">Textured Crop, Ivy League</div>
+            <span class="text-[10px] text-slate-500">Tôn xương quai hàm nam tính</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center">
+            <div class="text-xs font-bold text-slate-400 mb-1">MẶT DÀI (OBLONG)</div>
+            <div class="text-sm font-black text-purple-400">Two Block, Layer Mái Rủ</div>
+            <span class="text-[10px] text-slate-500">Thu gọn chiều dài khuôn mặt</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center">
+            <div class="text-xs font-bold text-slate-400 mb-1">MẶT TRÁI XOAN (OVAL)</div>
+            <div class="text-sm font-black text-emerald-400">Phù Hợp Mọi Kiểu Tóc</div>
+            <span class="text-[10px] text-slate-500">Tỷ lệ vàng hoàn hảo</span>
+        </div>
+    </div>
+</div>
 @endsection

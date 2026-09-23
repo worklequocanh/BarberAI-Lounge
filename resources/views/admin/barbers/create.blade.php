@@ -5,70 +5,64 @@
 @section('page-description', 'Tạo tài khoản và hồ sơ nhân viên tạo mẫu tóc mới cho salon.')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.barbers.index') }}">Thợ Cắt Tóc</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Thêm Mới</li>
+    <a href="{{ route('admin.barbers.index') }}" class="hover:text-amber-400">Thợ Cắt Tóc</a>
+    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600 mx-2"></i>
+    <span class="text-amber-400 font-semibold">Thêm Mới</span>
 @endsection
 
 @section('content')
-<section class="section">
-    <div class="row">
-        <div class="col-12 col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Hồ Sơ Nhân Sự</h5>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8">
+        <form action="{{ route('admin.barbers.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Họ Và Tên Stylist <span class="text-rose-400">*</span></label>
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="VD: Hoàng Tuấn Anh" required
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Số Điện Thoại <span class="text-rose-400">*</span></label>
+                    <input type="tel" name="phone" value="{{ old('phone') }}" placeholder="09xxxxxxxx" required
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.barbers.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Họ Và Tên Stylist <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="VD: Hoàng Tuấn Anh" required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Số Điện Thoại <span class="text-danger">*</span></label>
-                                <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" placeholder="09xxxxxxxx" required>
-                                @error('phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" placeholder="stylist@barber.local" required>
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Số Năm Kinh Nghiệm (Năm)</label>
-                            <input type="number" name="experience_years" class="form-control" value="{{ old('experience_years', 3) }}" min="0" max="40">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Tiểu Sử / Phong Cách Sở Trường</label>
-                            <textarea name="bio" rows="4" class="form-control" placeholder="Chuyên gia tạo mẫu các kiểu tóc uốn Hàn Quốc, tỉa Texture và Skin Fade cổ điển...">{{ old('bio') }}</textarea>
-                        </div>
-
-                        <div class="mb-4 form-check form-switch ps-5">
-                            <input class="form-check-input" type="checkbox" name="is_available" id="isAvailableSwitch" value="1" checked>
-                            <label class="form-check-label font-bold" for="isAvailableSwitch">Trạng thái sẵn sàng tiếp nhận lịch hẹn từ khách hàng</label>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.barbers.index') }}" class="btn btn-light-secondary">Huỷ Bỏ</a>
-                            <button type="submit" class="btn btn-primary px-4">Lưu Thợ Mới</button>
-                        </div>
-                    </form>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Email <span class="text-rose-400">*</span></label>
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="stylist@barber.local" required
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
             </div>
-        </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Số Năm Kinh Nghiệm (Năm)</label>
+                <input type="number" name="experience_years" value="{{ old('experience_years', 3) }}" min="0" max="40"
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Tiểu Sử / Phong Cách Sở Trường</label>
+                <textarea name="bio" rows="4" placeholder="Chuyên gia uốn con sâu, Side Part, Skin Fade nghệ thuật..."
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">{{ old('bio') }}</textarea>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <input type="checkbox" name="is_available" id="isAvailable" value="1" checked
+                    class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 bg-slate-900 border-slate-700">
+                <label for="isAvailable" class="text-xs font-semibold text-slate-300 cursor-pointer">Sẵn sàng nhận khách ngay</label>
+            </div>
+
+            <div class="pt-6 border-t border-slate-800 flex justify-end gap-3">
+                <a href="{{ route('admin.barbers.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold transition-colors">
+                    Huỷ Bỏ
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/20 transition-all">
+                    Lưu Hồ Sơ Stylist
+                </button>
+            </div>
+        </form>
     </div>
-</section>
+</div>
 @endsection

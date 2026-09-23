@@ -1,101 +1,68 @@
 @extends('layouts.admin')
 
-@section('title', 'Chỉnh Sửa Người Dùng')
+@section('title', 'Chỉnh Sửa Người Dùng: ' . $user->name)
 @section('page-title', 'Chỉnh Sửa Tài Khoản: ' . $user->name)
 @section('page-description', 'Cập nhật thông tin tài khoản, vai trò hoặc trạng thái hoạt động.')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Người Dùng</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Chỉnh Sửa</li>
+    <a href="{{ route('admin.users.index') }}" class="hover:text-amber-400">Người Dùng</a>
+    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600 mx-2"></i>
+    <span class="text-amber-400 font-semibold">Chỉnh Sửa</span>
 @endsection
 
 @section('content')
-<section class="section">
-    <div class="row">
-        <div class="col-12 col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Thông Tin Tài Khoản</h5>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8">
+        <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Họ Và Tên <span class="text-rose-400">*</span></label>
+                <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Email <span class="text-rose-400">*</span></label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
 
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Họ Và Tên <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Số Điện Thoại</label>
-                                <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}">
-                                @error('phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Đổi Mật Khẩu Mới</label>
-                                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Bỏ trống nếu không đổi">
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Vai Trò <span class="text-danger">*</span></label>
-                                <select name="role_id" class="form-select @error('role_id') is-invalid @enderror" required>
-                                    @foreach($roles as $role)
-                                        <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
-                                            {{ $role->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('role_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Giới Tính</label>
-                                <select name="gender" class="form-select">
-                                    <option value="male" {{ old('gender', $user->gender) == 'male' ? 'selected' : '' }}>Nam</option>
-                                    <option value="female" {{ old('gender', $user->gender) == 'female' ? 'selected' : '' }}>Nữ</option>
-                                    <option value="other" {{ old('gender', $user->gender) == 'other' ? 'selected' : '' }}>Khác</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-4 form-check form-switch ps-5">
-                            <input class="form-check-input" type="checkbox" name="is_active" id="isActiveSwitch" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }}>
-                            <label class="form-check-label font-bold" for="isActiveSwitch">Kích hoạt tài khoản</label>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-light-secondary">Huỷ Bỏ</a>
-                            <button type="submit" class="btn btn-primary px-4">Lưu Cập Nhật</button>
-                        </div>
-                    </form>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Số Điện Thoại</label>
+                    <input type="tel" name="phone" value="{{ old('phone', $user->phone) }}"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
             </div>
-        </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Đổi Mật Khẩu Mới</label>
+                    <input type="password" name="password" placeholder="Bỏ trống nếu không đổi"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Vai Trò <span class="text-rose-400">*</span></label>
+                    <select name="role_id" required class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-800 flex justify-end gap-3">
+                <a href="{{ route('admin.users.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold transition-colors">
+                    Huỷ Bỏ
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/20 transition-all">
+                    Lưu Thay Đổi
+                </button>
+            </div>
+        </form>
     </div>
-</section>
+</div>
 @endsection

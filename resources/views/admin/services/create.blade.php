@@ -2,112 +2,101 @@
 
 @section('title', 'Thêm Dịch Vụ Mới')
 @section('page-title', 'Thêm Dịch Vụ Salon')
-@section('page-description', 'Tạo gói dịch vụ cắt, uốn, nhuộm hoặc chăm sóc tóc mới cho tiệm.')
+@section('page-description', 'Tạo gói dịch vụ cắt, uốn, nhuộm hoặc đóng gói Combo tiết kiệm cho tiệm.')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.services.index') }}">Dịch Vụ</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Thêm Mới</li>
+    <a href="{{ route('admin.services.index') }}" class="hover:text-amber-400">Dịch Vụ</a>
+    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600 mx-2"></i>
+    <span class="text-amber-400 font-semibold">Thêm Mới</span>
 @endsection
 
 @section('content')
-<section class="section">
-    <div class="row">
-        <div class="col-12 col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Thông Tin Dịch Vụ</h5>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8">
+        <form action="{{ route('admin.services.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Tên Dịch Vụ <span class="text-rose-400">*</span></label>
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="VD: Uốn Con Sâu 2026, Combo VIP Đế Vương..." required
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Danh Mục Dịch Vụ</label>
+                    <select name="category_id" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <option value="">-- Chọn danh mục --</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.services.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Tên Dịch Vụ <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="VD: Uốn Con Sâu 2026, Cắt Fade Nghệ Thuật..." required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Danh Mục Dịch Vụ</label>
-                                <select name="category_id" class="form-select @error('category_id') is-invalid @enderror">
-                                    <option value="">-- Chọn danh mục --</option>
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('category_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Thời Gian Thực Hiện (Phút) <span class="text-danger">*</span></label>
-                                <input type="number" name="duration_min" class="form-control @error('duration_min') is-invalid @enderror" value="{{ old('duration_min', 30) }}" min="5" max="300" required>
-                                @error('duration_min')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Giá Bán / Khuyến Mãi (VNĐ) <span class="text-danger">*</span></label>
-                                <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', 150000) }}" min="0" step="5000" placeholder="150000" required>
-                                @error('price')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label font-bold">Giá Gốc Trước Giảm (VNĐ)</label>
-                                <input type="number" name="original_price" class="form-control @error('original_price') is-invalid @enderror" value="{{ old('original_price') }}" min="0" step="5000" placeholder="VD: 350000 (Dành cho gói Combo)">
-                                <small class="text-muted">Để trống nếu không có giá so sánh</small>
-                            </div>
-                        </div>
-
-                        <div class="mb-3 form-check form-switch ps-5">
-                            <input class="form-check-input" type="checkbox" name="is_combo" id="isComboSwitch" value="1" {{ old('is_combo') ? 'checked' : '' }}>
-                            <label class="form-check-label font-bold text-warning" for="isComboSwitch">
-                                <i class="bi bi-stars"></i> Đóng gói thành gói Combo Dịch Vụ (Cắt + Uốn + Gội...)
-                            </label>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Mô Tả Chi Tiết Quy Trình</label>
-                            <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror" placeholder="Mô tả các bước thực hiện, công nghệ uốn, dưỡng chất sử dụng...">{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4 form-check form-switch ps-5">
-                            <input class="form-check-input" type="checkbox" name="is_active" id="isActiveSwitch" value="1" checked>
-                            <label class="form-check-label font-bold" for="isActiveSwitch">Kích hoạt dịch vụ này trên hệ thống đặt lịch</label>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.services.index') }}" class="btn btn-light-secondary">Huỷ Bỏ</a>
-                            <button type="submit" class="btn btn-primary px-4">Lưu Dịch Vụ</button>
-                        </div>
-                    </form>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Thời Gian Thực Hiện (Phút) <span class="text-rose-400">*</span></label>
+                    <input type="number" name="duration_min" value="{{ old('duration_min', 30) }}" min="5" max="300" required
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Mẹo Thiết Lập</h5>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Giá Bán / Khuyến Mãi (VNĐ) <span class="text-rose-400">*</span></label>
+                    <input type="number" name="price" value="{{ old('price', 150000) }}" min="0" step="5000" required
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
-                <div class="card-body">
-                    <p class="text-muted small">Thời gian thực hiện chính xác giúp thuật toán đặt lịch tự động tránh bị trùng lịch hoặc quá tải cho các Stylist.</p>
-                    <div class="alert alert-light-primary mb-0">
-                        <i class="bi bi-lightbulb me-1"></i> Giá dịch vụ sẽ được dùng để tự động tính tổng tiền khi khách chọn nhiều dịch vụ cùng lúc.
-                    </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Giá Gốc Trước Giảm (Dành cho Combo)</label>
+                    <input type="number" name="original_price" value="{{ old('original_price') }}" min="0" step="5000" placeholder="VD: 350000"
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 </div>
             </div>
+
+            <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" name="is_combo" value="1" {{ old('is_combo') ? 'checked' : '' }}
+                        class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 bg-slate-900 border-slate-700">
+                    <span class="text-xs font-bold text-amber-300">
+                        <i class="fa-solid fa-crown mr-1"></i> Đóng gói thành Combo Dịch Vụ Siêu Tiết Kiệm (Cắt + Gội + Uốn...)
+                    </span>
+                </label>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Mô Tả Quy Trình Thực Hiện</label>
+                <textarea name="description" rows="4" placeholder="Mô tả các bước thực hiện, dòng mỹ phẩm cao cấp sử dụng..."
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">{{ old('description') }}</textarea>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <input type="checkbox" name="is_active" id="isActive" value="1" checked
+                    class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 bg-slate-900 border-slate-700">
+                <label for="isActive" class="text-xs font-semibold text-slate-300 cursor-pointer">Kích hoạt phục vụ ngay trên hệ thống đặt lịch</label>
+            </div>
+
+            <div class="pt-6 border-t border-slate-800 flex justify-end gap-3">
+                <a href="{{ route('admin.services.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold transition-colors">
+                    Huỷ Bỏ
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/20 transition-all">
+                    Lưu Dịch Vụ
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Side Tips -->
+    <div class="space-y-6">
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl">
+            <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-400"></i> Chiến Lược Combo
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Đóng gói combo cắt + uốn phồng + gội massage giúp nâng cao ticket size trung bình trên mỗi khách hàng lên từ 250k - 400k.
+            </p>
         </div>
     </div>
-</section>
+</div>
 @endsection

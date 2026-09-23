@@ -5,90 +5,69 @@
 @section('page-description', 'Bổ sung mẫu tóc thời trang vào bộ sưu tập và thiết lập dáng mặt phù hợp cho AI.')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.hairstyles.index') }}">Kiểu Tóc</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Thêm Mới</li>
+    <a href="{{ route('admin.hairstyles.index') }}" class="hover:text-amber-400">Kiểu Tóc</a>
+    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600 mx-2"></i>
+    <span class="text-amber-400 font-semibold">Thêm Mới</span>
 @endsection
 
 @section('content')
-<section class="section">
-    <div class="row">
-        <div class="col-12 col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Thông Tin Mẫu Tóc</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.hairstyles.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Tên Kiểu Tóc <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="VD: Ivy League Hàn Quốc, Mullet Layer..." required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8">
+        <form action="{{ route('admin.hairstyles.store') }}" method="POST" class="space-y-6">
+            @csrf
 
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Độ Khó Chăm Sóc / Tạo Kiểu</label>
-                            <select name="difficulty" class="form-select @error('difficulty') is-invalid @enderror">
-                                <option value="1" {{ old('difficulty') == 1 ? 'selected' : '' }}>1 Sao - Rất dễ (Chỉ cần sấy khô)</option>
-                                <option value="2" {{ old('difficulty') == 2 ? 'selected' : '' }}>2 Sao - Dễ (Sấy nhẹ vuốt sáp nhanh)</option>
-                                <option value="3" {{ old('difficulty', 3) == 3 ? 'selected' : '' }}>3 Sao - Trung bình (Cần sấy tạo phồng)</option>
-                                <option value="4" {{ old('difficulty') == 4 ? 'selected' : '' }}>4 Sao - Khó (Cần sấy lược tròn + gôm)</option>
-                                <option value="5" {{ old('difficulty') == 5 ? 'selected' : '' }}>5 Sao - Rất cầu kỳ (Cần uốn và giữ nếp chuẩn)</option>
-                            </select>
-                        </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Tên Kiểu Tóc <span class="text-rose-400">*</span></label>
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="VD: Side Part 7/3 Rủ, Textured Crop..." required
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Dáng Mặt Phù Hợp (Dùng cho AI Matching)</label>
-                            <p class="text-muted text-xs mb-2">Tích chọn các dáng mặt mà kiểu tóc này tôn đường nét nhất</p>
-                            <div class="row g-2">
-                                @foreach($faceShapes as $shape)
-                                <div class="col-6 col-md-4">
-                                    <div class="form-check border rounded p-2 ps-4">
-                                        <input class="form-check-input" type="checkbox" name="face_shape_ids[]" value="{{ $shape->id }}" id="fs_{{ $shape->id }}">
-                                        <label class="form-check-label font-bold" for="fs_{{ $shape->id }}">
-                                            {{ $shape->name }}
-                                        </label>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Độ Khó Chăm Sóc / Tạo Kiểu</label>
+                <select name="difficulty" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    <option value="1">1 Sao - Rất dễ (Chỉ cần sấy khô)</option>
+                    <option value="2">2 Sao - Dễ (Sấy nhẹ vuốt sáp nhanh)</option>
+                    <option value="3" selected>3 Sao - Trung bình (Cần sấy tạo phồng)</option>
+                    <option value="4">4 Sao - Khó (Cần sấy lược tròn + gôm)</option>
+                    <option value="5">5 Sao - Rất cầu kỳ (Cần uốn và giữ nếp chuẩn)</option>
+                </select>
+            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Thẻ Phân Loại (Tags)</label>
-                            <input type="text" name="tags" class="form-control" value="{{ old('tags') }}" placeholder="trending, hocsinh, congso, thoitrang (ngăn cách bởi dấu phẩy)">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label font-bold">Mô Tả Kiểu Tóc & Lời Khuyên Stylist</label>
-                            <textarea name="description" rows="4" class="form-control" placeholder="Mô tả phong cách, đối tượng phù hợp, các loại sáp nên dùng...">{{ old('description') }}</textarea>
-                        </div>
-
-                        <div class="mb-4 form-check form-switch ps-5">
-                            <input class="form-check-input" type="checkbox" name="is_active" id="isActiveSwitch" value="1" checked>
-                            <label class="form-check-label font-bold" for="isActiveSwitch">Hiển thị mẫu tóc này trên catalogue & cho phép AI gợi ý</label>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.hairstyles.index') }}" class="btn btn-light-secondary">Huỷ Bỏ</a>
-                            <button type="submit" class="btn btn-primary px-4">Lưu Mẫu Tóc</button>
-                        </div>
-                    </form>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Dáng Mặt Phù Hợp (Dùng Cho AI Matching)</label>
+                <p class="text-[11px] text-slate-400 mb-3">Tích chọn các dáng mặt mà kiểu tóc này tôn đường nét nhất</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    @foreach($faceShapes as $shape)
+                    <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-amber-500/40 cursor-pointer">
+                        <input type="checkbox" name="face_shape_ids[]" value="{{ $shape->id }}"
+                            class="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 bg-slate-900 border-slate-700">
+                        <span class="text-xs font-semibold text-slate-200">{{ $shape->name }}</span>
+                    </label>
+                    @endforeach
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Cách AI Gợi Ý</h5>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted small">Khi khách hàng gửi ảnh khuôn mặt, hệ thống sẽ tự động đối chiếu các dáng mặt được tích chọn ở đây để ưu tiên gợi ý mẫu tóc này cho khách.</p>
-                </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Thẻ Phân Loại (Tags)</label>
+                <input type="text" name="tags" value="{{ old('tags') }}" placeholder="han-quoc, lich-lam, undercut..."
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
             </div>
-        </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Mô Tả Kiểu Tóc & Cách Vuốt Sáp</label>
+                <textarea name="description" rows="4" placeholder="Hướng dẫn sấy form và phong cách thời trang tương thích..."
+                    class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">{{ old('description') }}</textarea>
+            </div>
+
+            <div class="pt-6 border-t border-slate-800 flex justify-end gap-3">
+                <a href="{{ route('admin.hairstyles.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold transition-colors">
+                    Huỷ Bỏ
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold shadow-lg shadow-amber-500/20 transition-all">
+                    Lưu Kiểu Tóc
+                </button>
+            </div>
+        </form>
     </div>
-</section>
+</div>
 @endsection
