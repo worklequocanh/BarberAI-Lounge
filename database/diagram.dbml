@@ -1,0 +1,299 @@
+// ==============================================================================
+// BARBER AI LOUNGE - DATABASE SCHEMA (DBML)
+// Xem trực tiếp tại: https://dbdiagram.io/d
+// ==============================================================================
+
+Project BarberAI_Lounge {
+  database_type: 'MySQL'
+  Note: '''
+    # BarberAI Lounge Database Schema
+    Hệ thống quản lý đặt lịch cắt tóc nam & trợ lý tư vấn kiểu tóc AI theo hình thái khuôn mặt.
+    Phiên bản tinh gọn dành cho đồ án / dự án cá nhân.
+  '''
+}
+
+// ------------------------------------------------------------------------------
+// 1. NHÓM NGƯỜI DÙNG & TÀI KHOẢN (USER & ROLES)
+// ------------------------------------------------------------------------------
+
+Table roles {
+  id integer [pk, increment]
+  name varchar(50) [not null, note: 'Tên hiển thị: Admin, Barber, Customer']
+  slug varchar(50) [unique, not null, note: 'admin, barber, customer']
+
+  Note: 'Phân quyền đơn giản 3 cấp: Quản trị, Thợ cắt tóc, Khách hàng'
+}
+
+Table users {
+  id integer [pk, increment]
+  name varchar(150) [not null]
+  email varchar(150) [unique, not null]
+  phone varchar(20) [unique, null]
+  password varchar(255) [not null]
+  avatar varchar(255) [null]
+  gender varchar(10) [null, note: 'male, female, other']
+  date_of_birth date [null]
+  role_id integer [ref: > roles.id, null]
+  is_active boolean [default: true]
+  email_verified_at timestamp [null]
+  remember_token varchar(100) [null]
+  created_at timestamp
+  updated_at timestamp
+
+  Note: 'Tài khoản người dùng chung cho toàn hệ thống'
+}
+
+// ------------------------------------------------------------------------------
+// 2. NHÓM THỢ CẮT TÓC & LỊCH LÀM VIỆC (BARBERS & SCHEDULES)
+// ------------------------------------------------------------------------------
+
+Table barbers {
+  id integer [pk, increment]
+  user_id integer [unique, not null, ref: - users.id]
+  bio text [null, note: 'Giới thiệu kinh nghiệm, phong cách thế mạnh']
+  experience_years integer [default: 0]
+  specialties json [null, note: 'Danh sách kỹ thuật sở trường (Skin Fade, Uốn Hàn Quốc, ...)']
+  rating_avg decimal(3,2) [default: 0.00]
+  total_reviews integer [default: 0]
+  is_available boolean [default: true]
+  created_at timestamp
+  deleted_at timestamp [null]
+
+  Note: 'Hồ sơ thợ cắt tóc / Stylist liên kết 1-1 với user'
+}
+
+Table barber_schedules {
+  id integer [pk, increment]
+  barber_id integer [not null, ref: > barbers.id]
+  day_of_week integer [not null, note: '0: Chủ Nhật, 1: Thứ 2, ..., 6: Thứ 7']
+  start_time time [not null, default: '08:30:00']
+  end_time time [not null, default: '20:30:00']
+  is_working boolean [default: true]
+
+  indexes {
+    (barber_id, day_of_week) [unique]
+  }
+
+  Note: 'Khung giờ làm việc định kỳ trong tuần của từng thợ'
+}
+
+// ------------------------------------------------------------------------------
+// 3. NHÓM DỊCH VỤ & DANH MỤC (SERVICES & CATEGORIES)
+// ------------------------------------------------------------------------------
+
+Table categories {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  slug varchar(100) [unique, not null]
+  description text [null]
+  image varchar(255) [null]
+  is_active boolean [default: true]
+  created_at timestamp
+
+  Note: 'Danh mục dịch vụ: Cắt tóc, Uốn phồng, Nhuộm thời trang, Combo VIP'
+}
+
+Table services {
+  id integer [pk, increment]
+  category_id integer [null, ref: > categories.id]
+  name varchar(150) [not null]
+  slug varchar(150) [unique, not null]
+  description text [null]
+  price decimal(12,0) [not null, note: 'Giá niêm yết (VNĐ)']
+  duration_min integer [default: 30, note: 'Thời lượng thực hiện (phút)']
+  image varchar(255) [null]
+  is_active boolean [default: true]
+  created_at timestamp
+  deleted_at timestamp [null]
+
+  Note: 'Bảng giá dịch vụ salon'
+}
+
+// ------------------------------------------------------------------------------
+// 4. NHÓM MẪU TÓC & NHẬN DIỆN KHUÔN MẶT (HAIRSTYLES & FACE SHAPES)
+// ------------------------------------------------------------------------------
+
+Table face_shapes {
+  id integer [pk, increment]
+  name varchar(50) [unique, not null, note: 'Oval, Square, Round, Heart, Diamond, Triangle']
+  slug varchar(50) [unique, not null]
+  description text [null]
+  created_at timestamp
+
+  Note: 'Bảng từ điển 6 hình thái khuôn mặt cơ bản của nam giới'
+}
+
+Table hairstyles {
+  id integer [pk, increment]
+  name varchar(150) [not null]
+  slug varchar(150) [unique, not null]
+  description text [null]
+  image varchar(255) [null]
+  difficulty integer [default: 1, note: '1 - 5 sao độ khó vuốt sáp / tạo kiểu']
+  face_shape_ids json [null, note: 'Mảng ID các dáng mặt phù hợp cho AI matching']
+  hair_types json [null, note: 'Chất tóc phù hợp: straight, wavy, curly']
+  tags json [null, note: 'Tags xu hướng: trending, gentlement, office']
+  views integer [default: 0]
+  is_active boolean [default: true]
+  created_at timestamp
+  deleted_at timestamp [null]
+
+  Note: 'Bộ sưu tập mẫu tóc xu hướng nam giới'
+}
+
+Table hairstyle_service {
+  id integer [pk, increment]
+  hairstyle_id integer [not null, ref: > hairstyles.id]
+  service_id integer [not null, ref: > services.id]
+
+  Note: 'Bảng pivot: Kiểu tóc này cần thực hiện những dịch vụ nào'
+}
+
+// ------------------------------------------------------------------------------
+// 5. NHÓM TRỢ LÝ TƯ VẤN KIỂU TÓC AI (AI ASSISTANT)
+// ------------------------------------------------------------------------------
+
+Table ai_conversations {
+  id integer [pk, increment]
+  user_id integer [null, ref: > users.id]
+  session_id varchar(64) [unique, null]
+  title varchar(255) [null]
+  status varchar(20) [default: 'active', note: 'active, closed']
+  created_at timestamp
+
+  Note: 'Phiên trò chuyện / tư vấn kiểu tóc với AI'
+}
+
+Table ai_messages {
+  id integer [pk, increment]
+  conversation_id integer [not null, ref: > ai_conversations.id]
+  role varchar(20) [not null, note: 'user, assistant, system']
+  content text [not null]
+  tokens_used integer [default: 0]
+  ai_model varchar(50) [null, note: 'gemini-1.5-flash, gemini-1.5-pro']
+  created_at timestamp
+
+  Note: 'Lịch sử tin nhắn trong phiên tư vấn AI'
+}
+
+Table ai_recommendations {
+  id integer [pk, increment]
+  conversation_id integer [null, ref: > ai_conversations.id]
+  user_id integer [null, ref: > users.id]
+  detected_face_shape varchar(50) [null, note: 'Dáng mặt AI nhận diện từ ảnh quét']
+  hair_type varchar(50) [null]
+  hairstyle_ids json [not null, note: 'Mảng ID kiểu tóc được AI đề xuất']
+  services_ids json [null, note: 'Mảng ID dịch vụ đề xuất đi kèm']
+  ai_reason text [null, note: 'Lời giải thích của AI tại sao kiểu tóc phù hợp']
+  confidence_score decimal(4,2) [null, note: 'Độ tin cậy của thuật toán (0.00 - 1.00)']
+  image_uploaded varchar(255) [null, note: 'Ảnh chân dung khách tải lên quét']
+  feedback_rating integer [null, note: 'Độ hài lòng của khách (1 - 5 sao)']
+  feedback_note varchar(255) [null]
+  created_at timestamp
+
+  Note: 'Kết quả phân tích khuôn mặt & gợi ý tạo mẫu tóc từ AI'
+}
+
+// ------------------------------------------------------------------------------
+// 6. NHÓM ĐẶT LỊCH, KHUYẾN MÃI & ĐÁNH GIÁ (BOOKING, COUPONS & REVIEWS)
+// ------------------------------------------------------------------------------
+
+Table coupons {
+  id integer [pk, increment]
+  code varchar(50) [unique, not null]
+  name varchar(150) [null]
+  discount_type varchar(20) [default: 'percent', note: 'percent: %, fixed: VNĐ']
+  discount_value decimal(12,0) [not null]
+  min_order_amount decimal(12,0) [default: 0]
+  usage_limit integer [null, note: 'Tổng số lượt dùng tối đa']
+  used_count integer [default: 0, note: 'Số lượt đã sử dụng']
+  starts_at timestamp [null]
+  expires_at timestamp [null]
+  is_active boolean [default: true]
+  created_by integer [null, ref: > users.id]
+  created_at timestamp
+  deleted_at timestamp [null]
+
+  Note: 'Mã giảm giá và khuyến mãi'
+}
+
+Table appointments {
+  id integer [pk, increment]
+  code varchar(20) [unique, not null, note: 'Mã đặt chỗ: APT20260901']
+  customer_id integer [not null, ref: > users.id]
+  barber_id integer [null, ref: > barbers.id]
+  coupon_id integer [null, ref: > coupons.id]
+  appointment_date date [not null]
+  start_time time [not null]
+  end_time time [null]
+  total_price decimal(12,0) [default: 0]
+  status varchar(20) [default: 'pending', note: 'pending, confirmed, in_progress, completed, cancelled, no_show']
+  payment_method varchar(20) [default: 'cash', note: 'cash, momo, vnpay, bank']
+  payment_status varchar(20) [default: 'unpaid', note: 'unpaid, paid, refunded']
+  note text [null]
+  cancel_reason varchar(255) [null]
+  ai_recommendation_id integer [null, ref: > ai_recommendations.id]
+  slot_key varchar(64) [unique, null, note: 'barberId_date_time chống race condition']
+  created_at timestamp
+  updated_at timestamp
+
+  Note: 'Đơn đặt lịch cắt tóc'
+}
+
+Table appointment_services {
+  id integer [pk, increment]
+  appointment_id integer [not null, ref: > appointments.id]
+  service_id integer [not null, ref: > services.id]
+  quantity integer [default: 1]
+  price decimal(12,0) [not null, note: 'Lưu giá dịch vụ tại thời điểm đặt']
+
+  Note: 'Chi tiết dịch vụ trong 1 đơn đặt lịch (Pivot n-n)'
+}
+
+Table reviews {
+  id integer [pk, increment]
+  appointment_id integer [unique, not null, ref: - appointments.id]
+  customer_id integer [not null, ref: > users.id]
+  barber_id integer [null, ref: > barbers.id]
+  rating integer [not null, note: '1 - 5 sao']
+  comment text [null]
+  images json [null]
+  created_at timestamp
+
+  Note: 'Đánh giá & nhận xét sau khi hoàn thành cắt tóc'
+}
+
+// ------------------------------------------------------------------------------
+// NHÓM BẢNG TRÊN SƠ ĐỒ (TABLE GROUPS)
+// ------------------------------------------------------------------------------
+
+TableGroup User_Management {
+  roles
+  users
+}
+
+TableGroup Barber_Staff {
+  barbers
+  barber_schedules
+}
+
+TableGroup Salon_Catalog {
+  categories
+  services
+  face_shapes
+  hairstyles
+  hairstyle_service
+}
+
+TableGroup AI_Assistant {
+  ai_conversations
+  ai_messages
+  ai_recommendations
+}
+
+TableGroup Booking_Flow {
+  appointments
+  appointment_services
+  coupons
+  reviews
+}
