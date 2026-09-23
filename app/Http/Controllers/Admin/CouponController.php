@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CouponController extends Controller
@@ -16,6 +16,7 @@ class CouponController extends Controller
     public function index(): View
     {
         $coupons = Coupon::latest()->paginate(10);
+
         return view('admin.coupons.index', compact('coupons'));
     }
 
@@ -43,11 +44,14 @@ class CouponController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
 
+        $validated['code'] = strtoupper(trim($validated['code']));
+        $validated['name'] = $request->input('name') ?? ('Mã '.$validated['code']);
         $validated['is_active'] = $request->has('is_active');
+        $validated['used_count'] = 0;
 
         Coupon::create($validated);
 
-        return redirect()->route('admin.coupons.index')->with('success', 'Đã tạo mã giảm giá ' . $validated['code'] . ' thành công!');
+        return redirect()->route('admin.coupons.index')->with('success', 'Đã tạo mã giảm giá '.$validated['code'].' thành công!');
     }
 
     /**
@@ -64,7 +68,7 @@ class CouponController extends Controller
     public function update(Request $request, Coupon $coupon): RedirectResponse
     {
         $validated = $request->validate([
-            'code' => 'required|string|max:50|unique:coupons,code,' . $coupon->id,
+            'code' => 'required|string|max:50|unique:coupons,code,'.$coupon->id,
             'discount_type' => 'required|in:percent,fixed',
             'discount_value' => 'required|numeric|min:1',
             'min_order_amount' => 'nullable|numeric|min:0',
@@ -74,6 +78,7 @@ class CouponController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
 
+        $validated['code'] = strtoupper(trim($validated['code']));
         $validated['is_active'] = $request->has('is_active');
 
         $coupon->update($validated);
@@ -87,6 +92,7 @@ class CouponController extends Controller
     public function destroy(Coupon $coupon): RedirectResponse
     {
         $coupon->delete();
+
         return redirect()->route('admin.coupons.index')->with('success', 'Đã xoá mã giảm giá thành công!');
     }
 }

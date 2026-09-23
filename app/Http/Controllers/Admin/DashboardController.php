@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AiConversation;
 use App\Models\Appointment;
 use App\Models\Barber;
 use App\Models\Service;
-use App\Models\AiConversation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\View\View;

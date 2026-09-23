@@ -7,9 +7,8 @@ use App\Models\Appointment;
 use App\Models\Barber;
 use App\Models\Service;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class AppointmentController extends Controller
@@ -47,6 +46,7 @@ class AppointmentController extends Controller
     {
         $barbers = Barber::with('user')->where('is_available', true)->get();
         $services = Service::where('is_active', true)->get();
+
         return view('admin.appointments.create', compact('barbers', 'services'));
     }
 
@@ -71,7 +71,7 @@ class AppointmentController extends Controller
             ['phone' => $validated['customer_phone']],
             [
                 'name' => $validated['customer_name'],
-                'email' => 'guest_' . time() . rand(10, 99) . '@barber.local',
+                'email' => 'guest_'.time().rand(10, 99).'@barber.local',
                 'password' => bcrypt('secret123'),
             ]
         );
@@ -80,7 +80,7 @@ class AppointmentController extends Controller
         $totalPrice = $selectedServices->sum('price');
 
         $appointment = Appointment::create([
-            'code' => 'APT' . date('Ymd') . rand(100, 999),
+            'code' => 'APT'.date('Ymd').rand(100, 999),
             'customer_id' => $customer->id,
             'barber_id' => $validated['barber_id'] ?: null,
             'appointment_date' => $validated['appointment_date'],
@@ -92,9 +92,13 @@ class AppointmentController extends Controller
             'note' => $validated['note'],
         ]);
 
-        $appointment->services()->sync($validated['service_ids']);
+        $syncData = [];
+        foreach ($selectedServices as $svc) {
+            $syncData[$svc->id] = ['price' => $svc->price, 'quantity' => 1];
+        }
+        $appointment->services()->sync($syncData);
 
-        return redirect()->route('admin.appointments.index')->with('success', 'Đã tạo lịch hẹn #' . $appointment->code . ' thành công!');
+        return redirect()->route('admin.appointments.index')->with('success', 'Đã tạo lịch hẹn #'.$appointment->code.' thành công!');
     }
 
     /**
@@ -105,6 +109,7 @@ class AppointmentController extends Controller
         $barbers = Barber::with('user')->get();
         $services = Service::all();
         $appointment->load(['customer', 'services']);
+
         return view('admin.appointments.edit', compact('appointment', 'barbers', 'services'));
     }
 
@@ -135,7 +140,11 @@ class AppointmentController extends Controller
             'note' => $validated['note'],
         ]);
 
-        $appointment->services()->sync($validated['service_ids']);
+        $syncData = [];
+        foreach ($selectedServices as $svc) {
+            $syncData[$svc->id] = ['price' => $svc->price, 'quantity' => 1];
+        }
+        $appointment->services()->sync($syncData);
 
         return redirect()->route('admin.appointments.index')->with('success', 'Đã cập nhật lịch hẹn thành công!');
     }
@@ -147,6 +156,7 @@ class AppointmentController extends Controller
     {
         $appointment->services()->detach();
         $appointment->delete();
+
         return redirect()->route('admin.appointments.index')->with('success', 'Đã xoá lịch hẹn thành công!');
     }
 }

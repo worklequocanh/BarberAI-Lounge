@@ -41,7 +41,7 @@
                                     <option value="">-- Bất kỳ thợ nào còn trống --</option>
                                     @foreach($barbers as $barber)
                                         <option value="{{ $barber->id }}" {{ old('barber_id') == $barber->id ? 'selected' : '' }}>
-                                            {{ $barber->user->name ?? 'Stylist' }} ({{ $barber->title ?? 'Barber' }})
+                                            {{ $barber->user->name ?? 'Stylist' }} ({{ $barber->experience_years ?? 0 }} năm KN)
                                         </option>
                                     @endforeach
                                 </select>

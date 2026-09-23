@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barber;
-use App\Models\User;
+use App\Models\BarberSchedule;
 use App\Models\Role;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BarberController extends Controller
@@ -18,6 +19,7 @@ class BarberController extends Controller
     public function index(): View
     {
         $barbers = Barber::with('user')->paginate(10);
+
         return view('admin.barbers.index', compact('barbers'));
     }
 
@@ -43,7 +45,7 @@ class BarberController extends Controller
             'is_available' => 'nullable|boolean',
         ]);
 
-        $barberRole = Role::where('name', 'barber')->first();
+        $barberRole = Role::where('slug', 'barber')->orWhere('name', 'like', '%Barber%')->first();
 
         $user = User::create([
             'name' => $validated['name'],
@@ -53,7 +55,7 @@ class BarberController extends Controller
             'role_id' => $barberRole?->id,
         ]);
 
-        Barber::create([
+        $barber = Barber::create([
             'user_id' => $user->id,
             'experience_years' => $validated['experience_years'],
             'bio' => $validated['bio'],
@@ -62,7 +64,18 @@ class BarberController extends Controller
             'total_reviews' => 0,
         ]);
 
-        return redirect()->route('admin.barbers.index')->with('success', 'Đã thêm Stylist ' . $user->name . ' vào đội ngũ salon!');
+        // Default schedule for new barber (Mon - Sat)
+        for ($day = 1; $day <= 6; $day++) {
+            BarberSchedule::create([
+                'barber_id' => $barber->id,
+                'day_of_week' => $day,
+                'start_time' => '08:30:00',
+                'end_time' => '20:30:00',
+                'is_working' => true,
+            ]);
+        }
+
+        return redirect()->route('admin.barbers.index')->with('success', 'Đã thêm Stylist '.$user->name.' vào đội ngũ salon!');
     }
 
     /**
@@ -71,6 +84,7 @@ class BarberController extends Controller
     public function edit(Barber $barber): View
     {
         $barber->load('user');
+
         return view('admin.barbers.edit', compact('barber'));
     }
 
@@ -81,7 +95,7 @@ class BarberController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
-            'phone' => 'required|string|max:20|unique:users,phone,' . $barber->user_id,
+            'phone' => 'required|string|max:20|unique:users,phone,'.$barber->user_id,
             'experience_years' => 'required|integer|min:0|max:50',
             'bio' => 'nullable|string',
             'is_available' => 'nullable|boolean',
@@ -107,6 +121,7 @@ class BarberController extends Controller
     public function destroy(Barber $barber): RedirectResponse
     {
         $barber->delete();
+
         return redirect()->route('admin.barbers.index')->with('success', 'Đã xoá hồ sơ thợ cắt tóc thành công!');
     }
 }

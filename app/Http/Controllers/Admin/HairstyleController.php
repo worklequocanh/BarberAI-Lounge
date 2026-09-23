@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Hairstyle;
 use App\Models\FaceShape;
-use Illuminate\Http\Request;
+use App\Models\Hairstyle;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -19,6 +19,7 @@ class HairstyleController extends Controller
     {
         $hairstyles = Hairstyle::latest()->paginate(9);
         $faceShapes = FaceShape::all()->keyBy('id');
+
         return view('admin.hairstyles.index', compact('hairstyles', 'faceShapes'));
     }
 
@@ -28,6 +29,7 @@ class HairstyleController extends Controller
     public function create(): View
     {
         $faceShapes = FaceShape::all();
+
         return view('admin.hairstyles.create', compact('faceShapes'));
     }
 
@@ -46,7 +48,7 @@ class HairstyleController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']) . '-' . rand(100, 999);
+        $validated['slug'] = Str::slug($validated['name']).'-'.rand(100, 999);
         $validated['is_active'] = $request->has('is_active');
         $validated['face_shape_ids'] = array_map('intval', $request->input('face_shape_ids', []));
 
@@ -65,6 +67,7 @@ class HairstyleController extends Controller
     public function edit(Hairstyle $hairstyle): View
     {
         $faceShapes = FaceShape::all();
+
         return view('admin.hairstyles.edit', compact('hairstyle', 'faceShapes'));
     }
 
@@ -101,6 +104,7 @@ class HairstyleController extends Controller
     public function destroy(Hairstyle $hairstyle): RedirectResponse
     {
         $hairstyle->delete();
+
         return redirect()->route('admin.hairstyles.index')->with('success', 'Đã xoá mẫu tóc khỏi bộ sưu tập!');
     }
 }
