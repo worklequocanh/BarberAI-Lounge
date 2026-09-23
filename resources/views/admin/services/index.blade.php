@@ -60,7 +60,7 @@
                                     <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>
-                                    <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xoá dịch vụ {{ $service->name }}?');" class="d-inline">
+                                    <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" data-confirm="Bạn có chắc chắn muốn xoá dịch vụ {{ $service->name }}?" class="d-inline form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Xoá">

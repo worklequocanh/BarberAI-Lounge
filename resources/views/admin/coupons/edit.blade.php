@@ -69,7 +69,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-outline-danger" onclick="if(confirm('Bạn có chắc muốn xoá mã này?')) document.getElementById('del-coupon-form').submit();">
+                            <button type="button" class="btn btn-outline-danger" onclick="confirmAction({text: 'Bạn có chắc muốn xoá mã voucher {{ $coupon->code }}?'}).then(r => { if(r.isConfirmed) document.getElementById('del-coupon-form').submit(); });">
                                 <i class="bi bi-trash"></i> Xoá Mã
                             </button>
                             <div class="d-flex gap-2">

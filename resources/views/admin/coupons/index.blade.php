@@ -65,7 +65,7 @@
                                     <a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-sm btn-outline-primary" title="Sửa">
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>
-                                    <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá mã {{ $coupon->code }}?');" class="d-inline">
+                                    <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" data-confirm="Bạn có chắc muốn xoá mã voucher {{ $coupon->code }}?" class="d-inline form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Xoá">

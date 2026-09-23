@@ -62,7 +62,7 @@
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>
                                     @if($user->id !== 1)
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xoá tài khoản {{ $user->name }}?');" class="d-inline">
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" data-confirm="Bạn có chắc chắn muốn xoá tài khoản {{ $user->name }}?" class="d-inline form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Xoá">

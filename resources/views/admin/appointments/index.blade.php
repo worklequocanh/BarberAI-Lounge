@@ -158,7 +158,7 @@
                                     <a href="{{ route('admin.appointments.edit', $appointment->id) }}" class="btn btn-sm btn-outline-primary" title="Sửa & Cập nhật">
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>
-                                    <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá lịch hẹn #{{ $appointment->code }}?');" class="d-inline">
+                                    <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST" data-confirm="Bạn có chắc muốn xoá lịch hẹn #{{ $appointment->code }}?" class="d-inline form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Xoá">

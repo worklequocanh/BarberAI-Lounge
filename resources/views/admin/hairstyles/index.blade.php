@@ -52,7 +52,7 @@
                                 <a href="{{ route('admin.hairstyles.edit', $hair->id) }}" class="btn btn-sm btn-outline-primary" title="Sửa">
                                     <i class="bi bi-pencil"></i> Sửa
                                 </a>
-                                <form action="{{ route('admin.hairstyles.destroy', $hair->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xoá kiểu tóc này?');" class="d-inline">
+                                <form action="{{ route('admin.hairstyles.destroy', $hair->id) }}" method="POST" data-confirm="Bạn có chắc chắn muốn xoá kiểu tóc {{ $hair->name }}?" class="d-inline form-delete">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger" title="Xoá">

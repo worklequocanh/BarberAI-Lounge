@@ -67,7 +67,7 @@
                                     <a href="{{ route('admin.barbers.edit', $barber->id) }}" class="btn btn-sm btn-outline-primary" title="Sửa thông tin">
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>
-                                    <form action="{{ route('admin.barbers.destroy', $barber->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá hồ sơ stylist này?');" class="d-inline">
+                                    <form action="{{ route('admin.barbers.destroy', $barber->id) }}" method="POST" data-confirm="Bạn có chắc muốn xoá hồ sơ stylist {{ $barber->user->name ?? '' }}?" class="d-inline form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Xoá">
